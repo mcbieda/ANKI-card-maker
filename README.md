@@ -1,7 +1,8 @@
 # ANKI-card-maker
 
-A Claude Code skill that turns a topic, article, or ChatGPT conversation into a
-set of Anki flashcards, saved as a CSV ready for Anki's import.
+A Claude Code skill that turns a topic, article, or LLM chat conversation
+(ChatGPT, Claude, etc.) into a set of Anki flashcards, saved as a CSV ready
+for Anki's import.
 
 ## What's in this folder
 
@@ -55,3 +56,23 @@ On success it prints a one-line JSON summary and writes two files into
 On failure it exits non-zero with a message on stderr explaining what went
 wrong (e.g. no share-page payload found, or zero messages recovered) rather
 than silently writing an empty/garbage transcript.
+
+## Using a Claude (or other LLM) chat as a source
+
+There's no extractor script for `claude.ai/share/...` links. Unlike ChatGPT's
+share pages, Claude's share page is a pure client-rendered shell with no
+conversation content anywhere in the page source, so there's nothing for a
+script to fetch or decode.
+
+Instead, copy the conversation text out of the browser and paste it into a
+plain `.txt` file, then point the skill at that file. A couple of tips:
+
+- Name the file with a `chat-` or `dialogue-` prefix (e.g.
+  `chat-gini-coefficient.txt`) as a hint that it's a pasted LLM conversation
+  rather than an article or your own notes.
+- The filename hint alone isn't enough for Claude to know what it's looking
+  at — say so explicitly in your prompt, e.g. "make flashcards from
+  `chat-gini-coefficient.txt`, it's a pasted conversation with Claude."
+- You don't need to manually label who said what — the skill will infer user
+  vs. assistant turns from context (question-like vs. long/structured answers).
+  It'll only ask you to clarify if the turn-taking is genuinely ambiguous.
