@@ -13,6 +13,8 @@ See README.md for setup requirements (Python version, dependencies) if installin
 3. The file should be named as the user indicates, or creating a reasonable name.
 
 4. If a web address is given, the contents of the web address should be read and the cards based on the content at the web address and associated knowledge.
+	- do NOT use a generic web-fetch tool (e.g. Claude Code's built-in WebFetch) for this. That tool explicitly processes the page through a separate, small/fast model and returns that model's paraphrase of it, not the actual page text — you end up writing cards from a lossy summary instead of the source, which loses exact wording, specific facts, and any equations entirely.
+	- instead, get the real underlying text yourself: fetch the raw HTML/page (e.g. via `curl`) and read the actual content, or use a source-specific text API when one exists — e.g. for Wikipedia, `https://en.wikipedia.org/w/api.php?action=query&prop=extracts&titles=<Title>&format=json&explaintext=1` returns the full plain-text article. Then read that raw text directly and build cards from it, per rule 13's final accuracy check.
 5. Note that if chatgpt web addresses are given, these will be dialogues with the LLM.
 	- chatgpt.com/share pages are client-rendered: a plain fetch only returns the page `<title>`, not the conversation. Do NOT rely on a generic web-fetch tool for these links.
 	- instead, run `scripts/chatgpt_share_extractor.py` (in this skill's folder) on the share URL, e.g.:
