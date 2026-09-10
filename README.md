@@ -63,13 +63,21 @@ source phrased it. That's a bad deck. This skill is opinionated about what a
 
 ## Installing
 
-Copy this whole folder into a `.claude/skills/` directory:
+The skill is the repo, so clone it straight into a `.claude/skills/` directory:
 
 ```bash
-# project-scoped: available in one repo
-cp -r ANKI-card-maker /path/to/project/.claude/skills/
+# user-scoped: available in every project
+git clone https://github.com/<your-username>/ANKI-card-maker \
+  ~/.claude/skills/ANKI-card-maker
 
-# user-scoped: available everywhere
+# project-scoped: available in one repo
+git clone https://github.com/<your-username>/ANKI-card-maker \
+  /path/to/project/.claude/skills/ANKI-card-maker
+```
+
+Or, if you already have the folder on disk, just copy it:
+
+```bash
 cp -r ANKI-card-maker ~/.claude/skills/
 ```
 
@@ -77,8 +85,9 @@ Then invoke it in Claude Code as `/ANKI-card-maker`, or just describe what you
 want ("make Anki cards from this paper") and Claude will pick it up from the
 skill's description.
 
-The folder name is the skill name, so keep it as `ANKI-card-maker` unless you
-intend to rename the command.
+The folder name is the command name. `SKILL.md` pins it with `name:
+ANKI-card-maker`, so a differently-named clone directory still gives you
+`/ANKI-card-maker`; change both if you want to rename it.
 
 ## ABOUT-ME.md — tuning the cards to you
 
@@ -229,3 +238,8 @@ style. The numbered rules are independent, so you can add, drop, or reweight
 them freely — e.g. raise or lower how many intuition cards are required, add a
 rule for cloze-deletion cards, or change the required CSV layout to match a
 different note type.
+
+## License
+
+MIT &mdash; see [LICENSE](LICENSE). `ABOUT-ME.md` ships with the original
+author's one-line background as a worked example; replace it with your own.
