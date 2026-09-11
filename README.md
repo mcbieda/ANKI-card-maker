@@ -85,11 +85,11 @@ The skill is the repo, so clone it straight into a `.claude/skills/` directory:
 
 ```bash
 # user-scoped: available in every project
-git clone https://github.com/<your-username>/ANKI-card-maker \
+git clone https://github.com/mcbieda/ANKI-card-maker \
   ~/.claude/skills/ANKI-card-maker
 
 # project-scoped: available in one repo
-git clone https://github.com/<your-username>/ANKI-card-maker \
+git clone https://github.com/mcbieda/ANKI-card-maker \
   /path/to/project/.claude/skills/ANKI-card-maker
 ```
 
