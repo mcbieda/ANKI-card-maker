@@ -1,8 +1,24 @@
 # ANKI-card-maker
 
+written by Mark Bieda and Claude Opus 5  
+
 A Claude Code skill that turns a topic, a web article, or an LLM chat
 conversation into a set of [Anki](https://apps.ankiweb.net/) flashcards,
-written out as a CSV that's ready to import.
+written out as a CSV that's ready to import. These could presumably be used with many other flashcard/spaced repetition programs. 
+
+## Try it  
+1. Install this as a skill (see below).  
+2. then use the prompt:  
+ _make flashcards for https://en.wikipedia.org/wiki/Receptor_tyrosine_kinase#Signal_transduction and save as mycards.csv_
+ 
+ (If the flashcards returned are too technical, edit ABOUT-ME.md to say something like "I don't know much about molecular biology or signal transduction so please set the level to an incoming college student")
+
+## Why I did this  
+- You learn about a topic, and you want to remember what you learned. Or maybe you need to go back and review that topic.
+- Spaced repetition works great for learning, reviewing, and testing your knowledge.  
+- ANKI is a free program for this, that works well. I've personally used ANKI on >2,000 days over a period of almost 3,000 days. And a total of >15,000 reviews. So I am a confirmed believer.  
+- Making your own cards is great, but can be time consuming and even annoying, especially when equations are involved.  
+- This skill makes creating a lot of cards on a topic easy and customizes them to you and things that confuse you (when it has enough info to figure that second part out).  
 
 ## Why this is interesting
 
@@ -52,7 +68,9 @@ source phrased it. That's a bad deck. This skill is opinionated about what a
 
 ## Requirements
 
-- **Claude Code** (this is a skill, not a standalone program).
+- **Claude Code** (this is a skill, not a standalone program) — though it
+  adapts to other coding agents; see
+  [Using this outside Claude Code](#using-this-outside-claude-code).
 - **Python 3.9 or later** — only needed for the ChatGPT share-link extractor.
 - **No third-party packages.** `chatgpt_share_extractor.py` uses the standard
   library only (`argparse`, `json`, `re`, `sys`, `urllib.request`, `pathlib`).
@@ -238,6 +256,39 @@ style. The numbered rules are independent, so you can add, drop, or reweight
 them freely — e.g. raise or lower how many intuition cards are required, add a
 rule for cloze-deletion cards, or change the required CSV layout to match a
 different note type.
+
+## Using this outside Claude Code
+
+The packaging is Claude Code-specific, but almost nothing else is. `SKILL.md`
+is plain prose, and `chatgpt_share_extractor.py` is an ordinary stdlib Python
+CLI, so both work with Codex, GitHub Copilot, Cursor, or anything else that can
+read instructions and run a shell command.
+
+Three things to adjust:
+
+- **Discovery and invocation.** `.claude/skills/<name>/SKILL.md`, the YAML
+  frontmatter, and the `/ANKI-card-maker` command are Claude Code's skill
+  system; other tools won't find the file on their own. Point your agent at
+  `SKILL.md` explicitly, or add a thin wrapper in whatever file that tool reads
+  automatically (`AGENTS.md` for Codex and Copilot, `.github/copilot-instructions.md`,
+  `.cursor/rules` for Cursor) saying "for flashcard requests, follow SKILL.md in
+  this repo." Those conventions change fairly often — check your tool's current
+  docs rather than trusting this list.
+- **Rule 4 names a Claude Code tool.** Its warning is against `WebFetch`
+  specifically, but the real point is general: don't build cards from a fetch
+  tool that returns a model's *paraphrase* of a page, because exact wording,
+  numbers, and equations don't survive it. Retarget that rule at whatever the
+  equivalent tool is called in your agent.
+- **Network sandboxing will probably block the ChatGPT extractor.** It needs
+  outbound HTTP to `chatgpt.com`. Codex CLI sandboxes network access by default,
+  and Copilot's coding agent runs behind a firewall allowlist that is unlikely
+  to include that host. Either allow it in your sandbox config, or run the
+  script yourself outside the agent and hand over the resulting
+  `<id>.transcript.txt`.
+
+If your agent can't run shell commands at all (e.g. plain in-editor chat), the
+card rules still work — you just lose the extractor, and ChatGPT links fall back
+to the same copy-paste-a-transcript workflow already used for `claude.ai` links.
 
 ## License
 
