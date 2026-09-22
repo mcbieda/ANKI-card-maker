@@ -12,6 +12,10 @@ written out as a CSV that's ready to import. These could presumably be used with
  _make flashcards for https://en.wikipedia.org/wiki/Receptor_tyrosine_kinase#Signal_transduction and save as mycards.csv_
  
  (If the flashcards returned are too technical, edit ABOUT-ME.md to say something like "I don't know much about molecular biology or signal transduction so please set the level to an incoming college student")
+3. Import the CSV into Anki: **File → Import**, note type **Basic**, set
+ **Field separator** to **Comma**, and tick **Allow HTML in fields** so any
+ equations render. Details in
+ [Importing the CSV into Anki](#importing-the-csv-into-anki).
 
 ## Why I did this  
 - You learn about a topic, and you want to remember what you learned. Or maybe you need to go back and review that topic.
@@ -239,6 +243,13 @@ point the skill at that:
 The output is a simple two-field front/back CSV. In Anki: **File → Import**,
 pick the CSV, choose the **Basic** note type and the deck you want, and map
 field 1 → Front, field 2 → Back.
+
+Set **Field separator** to **Comma** on the import screen. The skill writes
+comma-delimited files with every field quoted (`"front","back"`), so commas
+inside a card's text are handled correctly. Anki's auto-detect usually picks
+this up on its own, but set it explicitly if you've previously imported a
+tab- or semicolon-delimited file — the setting is sticky, and a stale one
+turns every card into a single mangled field.
 
 If the deck contains equations, tick **Allow HTML in fields** on the import
 screen so the math renders instead of showing as literal markup. Anki renders
