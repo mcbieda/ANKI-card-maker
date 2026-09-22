@@ -15,7 +15,7 @@ See README.md for setup requirements (Python version, dependencies) if installin
 
 4. If a web address is given, the contents of the web address should be read and the cards based on the content at the web address and associated knowledge.
 	- do NOT use a generic web-fetch tool (e.g. Claude Code's built-in WebFetch) for this. That tool explicitly processes the page through a separate, small/fast model and returns that model's paraphrase of it, not the actual page text — you end up writing cards from a lossy summary instead of the source, which loses exact wording, specific facts, and any equations entirely.
-	- instead, get the real underlying text yourself: fetch the raw HTML/page (e.g. via `curl`) and read the actual content, or use a source-specific text API when one exists — e.g. for Wikipedia, `https://en.wikipedia.org/w/api.php?action=query&prop=extracts&titles=<Title>&format=json&explaintext=1` returns the full plain-text article. Then read that raw text directly and build cards from it, per rule 14's final accuracy check.
+	- instead, get the real underlying text yourself: fetch the raw HTML/page (e.g. via `curl`) and read the actual content, or use a source-specific text API when one exists — e.g. for Wikipedia, `https://en.wikipedia.org/w/api.php?action=query&prop=extracts&titles=<Title>&format=json&explaintext=1` returns the full plain-text article. Then read that raw text directly and build cards from it, per rule 15's final accuracy check.
 5. Note that if chatgpt web addresses are given, these will be dialogues with the LLM.
 	- chatgpt.com/share pages are client-rendered: a plain fetch only returns the page `<title>`, not the conversation. Do NOT rely on a generic web-fetch tool for these links.
 	- instead, run `scripts/chatgpt_share_extractor.py` (in this skill's folder) on the share URL, e.g.:
@@ -28,21 +28,25 @@ See README.md for setup requirements (Python version, dependencies) if installin
 	- a pasted transcript usually won't have explicit speaker labels. Infer who said what from context: assistant turns are typically longer and more structured (headers, bullet points, worked explanations), user turns are typically shorter questions/follow-ups. Only ask the user to clarify if the turn-taking is genuinely ambiguous after this inference.
 	- copy-pasted equations are often mangled: rendered math can turn into stray unicode (√, ², ×, garbled fraction layouts), broken/partial LaTeX (missing backslashes, orphaned `\frac`/`^`/`_` with no braces, line breaks in the middle of a formula), or the equation dropped entirely and replaced with a caption/alt-text placeholder. Don't transcribe this literally into a card. Instead, reconstruct the actual equation from context (surrounding prose, symbol definitions, what the discussion is clearly about) and re-render it cleanly as proper LaTeX. If a formula is too garbled or ambiguous to confidently reconstruct, say so and ask the user rather than guessing at guessed symbols.
 6. When equations are present, the answer should always show the equation, an intuitive explanation of the equation, and the meaning of every symbol
-7. There should always be very simple cards just on defining the meaning of acronyms, but only acronyms directly relevant to the topic
+7. When a symbol is present in a question or an answer, always also give the definition or meaning of that symbol
+	- this applies wherever the symbol appears, not only inside a displayed equation: a symbol used in ordinary prose (a parameter name, an exponent, a count) still needs its meaning given on that same card
+	- never rely on a symbol having been defined on a different card. Each card is reviewed on its own, often months apart and in random order, so every card has to stand alone
+	- if defining every symbol would overload one card, that is a sign the card is trying to do too much — split it
+8. There should always be very simple cards just on defining the meaning of acronyms, but only acronyms directly relevant to the topic
 	- acronyms used for examples etc should have the acronyms defined within the question or answer
-8. There should always be very simple cards giving a very simple, intuitive understanding of the topic
+9. There should always be very simple cards giving a very simple, intuitive understanding of the topic
 	- there should be at least one card on "why is this used" basically
 	- there should be cards that ask for intuitive explanations of simple parts of the process/topic
 	- there should be simple cards asking for a basic, simple explanation of steps if it is a process
 	- it's ok for there to be multiple cards asking these questions from different angles
 	- at least one card should say roughly "explain this topic to an undergrad new to your lab"
 	- at least one card should say "explain why this matters to someone outside of your field"
-9. equations should use ANKI approaches to create easily viewed equations in ANKI
-10. There should always be cards that emphasize the limitations of the process or topic: like when things don't work well
-11. It's ok to ask if certain equations, in particular, should be included.
-12. There should always be a focus on the most important ideas/parts of topic/ parts of process as opposed to including everything.
-13. If there are multiple examples in the referenced work, only a subset of these should be used for card generation.
+10. equations should use ANKI approaches to create easily viewed equations in ANKI
+11. There should always be cards that emphasize the limitations of the process or topic: like when things don't work well
+12. It's ok to ask if certain equations, in particular, should be included.
+13. There should always be a focus on the most important ideas/parts of topic/ parts of process as opposed to including everything.
+14. If there are multiple examples in the referenced work, only a subset of these should be used for card generation.
 	- the focus of card generation must be the main topic, not example side topics
-14. After the csv is generated, always read it back in and review all content for accuracy and clarity
+15. After the csv is generated, always read it back in and review all content for accuracy and clarity
 
  
